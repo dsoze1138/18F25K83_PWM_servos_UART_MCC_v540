@@ -69,7 +69,11 @@ void main(void)
     // Disable low priority global interrupts.
     //INTERRUPT_GlobalInterruptLowDisable();
 
-    printf("Servo demo v1.0 built " __DATE__ " at " __TIME__ "\r\n");
+    __delay_ms(2500); /* wait for IDE to stop messing with the ICD tool */
+    printf("PIC18F25K83 Servo demo v1.0 built " __DATE__ " at " __TIME__ "\r\n");
+    Servo1_SetPosition(-45.0);
+    Servo2_SetPosition(0.0);
+    Servo3_SetPosition(45.0);
     while (1)
     {
         // Add your application code
