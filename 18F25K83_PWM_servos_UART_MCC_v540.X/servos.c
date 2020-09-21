@@ -43,10 +43,10 @@
 #include "mcc_generated_files/mcc.h"
 #include "servos.h"
 
-#define SERVO_UPDATE_HZ (50ul)
+#define SERVO_REFRESH_HZ (50ul)
 #define TIMER2_CLOCK_HZ (78125ul)
 #define TIMER2_COUNTS_PER_PERIOD (255ul)
-#define TIMER2_INTERUPTS_IN_20_MS (TIMER2_CLOCK_HZ/(TIMER2_COUNTS_PER_PERIOD*SERVO_UPDATE_HZ))
+#define TIMER2_INTERUPTS_IN_20_MS (TIMER2_CLOCK_HZ/(TIMER2_COUNTS_PER_PERIOD*SERVO_REFRESH_HZ))
 #define PWM_OFFSET ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
 #define PWM_SPAN   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
 
@@ -59,13 +59,15 @@ static volatile uint16_t Position_Servo_1;
 static volatile uint16_t Position_Servo_2;
 static volatile uint16_t Position_Servo_3;
 /*
- * Update the servo position pulses.
+ * Refresh the servo position pulses.
  * 
  * This is an interrupt call back so remember
  * the code executes in an ISR context.
  * 
- * DO NOT SPIN WAITS!
- * DO NOT CALL FUNCTION THAT BLOCK!
+ * DO NOT SPIN WAIT!
+ * DO NOT USE INTERGER DIVIDE!
+ * DO NOT CALL FUNCTIONS THAT BLOCK!
+ * DO NOT EVEN THINK ABOUT USING FLOATS!!!
  * 
  * Remember that the TIMER2 interrupt asserts 
  * every 3264 microseconds with FOSC at 20 MHz 
@@ -88,7 +90,7 @@ static void TMR2_ServoInterruptHandler(void)
         }
         else
         {
-            /* Restart servo the pulse */
+            /* Refresh the servo position */
             PwmServo_1 = Position_Servo_1;
             PwmServo_2 = Position_Servo_2;
             PwmServo_3 = Position_Servo_3;
