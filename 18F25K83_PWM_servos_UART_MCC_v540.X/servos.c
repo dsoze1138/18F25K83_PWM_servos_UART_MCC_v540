@@ -44,11 +44,15 @@
 #include "servos.h"
 
 #define SERVO_REFRESH_HZ (50ul)
-#define TIMER2_CLOCK_HZ (78125ul)
-#define TIMER2_COUNTS_PER_PERIOD (255ul)
+#define TIMER2_CLOCK_HZ (102400ul)
+#define TIMER2_COUNTS_PER_PERIOD (256ul)
 #define TIMER2_INTERUPTS_IN_20_MS (TIMER2_CLOCK_HZ/(TIMER2_COUNTS_PER_PERIOD*SERVO_REFRESH_HZ))
-#define PWM_OFFSET ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
-#define PWM_SPAN   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
+#define PWM_OFFSET1 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
+#define PWM_SPAN1   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
+#define PWM_OFFSET2 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
+#define PWM_SPAN2   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
+#define PWM_OFFSET3 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
+#define PWM_SPAN3   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
 
 /* Private data */
 static volatile uint16_t PwmServo_1;
@@ -107,9 +111,9 @@ static void TMR2_ServoInterruptHandler(void)
  */
 void Servo_Init(void)
 {
-   Position_Servo_1 = PWM_OFFSET + (PWM_SPAN/2); /* set servo position to mid point */
-   Position_Servo_2 = PWM_OFFSET + (PWM_SPAN/2); /* set servo position to mid point */
-   Position_Servo_3 = PWM_OFFSET + (PWM_SPAN/2); /* set servo position to mid point */
+   Position_Servo_1 = PWM_OFFSET1 + (PWM_SPAN1/2); /* set servo position to mid point */
+   Position_Servo_2 = PWM_OFFSET2 + (PWM_SPAN2/2); /* set servo position to mid point */
+   Position_Servo_3 = PWM_OFFSET3 + (PWM_SPAN3/2); /* set servo position to mid point */
    TMR2_SetInterruptHandler(TMR2_ServoInterruptHandler);
 
     /* Set initial positions */
@@ -130,7 +134,7 @@ void Servo1_SetPosition(float DegreesFromZero)
         return;
     }
     
-    temp  = (uint16_t)(PWM_OFFSET + (PWM_SPAN/2)) + (uint16_t)((PWM_SPAN/2) * (DegreesFromZero / 90.0));
+    temp = (uint16_t)( ((DegreesFromZero / 90.0)*(PWM_SPAN1/2))+(PWM_SPAN1/2))+PWM_OFFSET1;
     Position_Servo_1 = temp;
 }
 /*
@@ -148,7 +152,7 @@ void Servo2_SetPosition(float DegreesFromZero)
         return;
     }
     
-    temp  = (uint16_t)(PWM_OFFSET + (PWM_SPAN/2)) + (uint16_t)((PWM_SPAN/2) * (DegreesFromZero / 90.0));
+    temp = (uint16_t)( ((DegreesFromZero / 90.0)*(PWM_SPAN2/2))+(PWM_SPAN2/2))+PWM_OFFSET2;
     Position_Servo_2 = temp;
 }
 /*
@@ -166,6 +170,6 @@ void Servo3_SetPosition(float DegreesFromZero)
         return;
     }
     
-    temp  = (uint16_t)(PWM_OFFSET + (PWM_SPAN/2)) + (uint16_t)((PWM_SPAN/2) * (DegreesFromZero / 90.0));
+    temp = (uint16_t)( ((DegreesFromZero / 22.5)*(PWM_SPAN3/2))+(PWM_SPAN3/2))+PWM_OFFSET3;
     Position_Servo_3 = temp;
 }
