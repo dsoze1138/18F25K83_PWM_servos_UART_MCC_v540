@@ -56,6 +56,8 @@
 #define PWM_OFFSET3 ((TIMER2_CLOCK_HZ*4.0*0.8)/1000.0)  /* 0.8 milliseconds offset */
 #define PWM_SPAN3   ((TIMER2_CLOCK_HZ*4.0*1.00)/1000.0) /* 1.0 milliseconds span  */
 
+#define TIMER2_IntEna PIE4bits.TMR2IE
+
 /* Private data */
 static volatile uint16_t PwmServo_1;
 static volatile uint16_t PwmServo_2;
@@ -119,7 +121,11 @@ void Servo_Init(void)
    TMR2_SetInterruptHandler(TMR2_ServoInterruptHandler);
 
     /* Set initial positions */
+    TIMER2_IntEna = 0; /* mask TIMER2 interrupt for this update */
     PwmServo_1 = Position_Servo_1;
+    PwmServo_2 = Position_Servo_2;
+    PwmServo_3 = Position_Servo_2;
+    TIMER2_IntEna = 1;
 }
 /*
  * Set servo 1 position
@@ -137,7 +143,9 @@ void Servo1_SetPosition(float DegreesFromZero)
     }
     
     temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN1/2))+(PWM_SPAN1/2))+PWM_OFFSET1;
+    TIMER2_IntEna = 0; /* mask TIMER2 interrupt for this update */
     Position_Servo_1 = temp;
+    TIMER2_IntEna = 1;
 }
 /*
  * Set servo 2 position
@@ -154,7 +162,9 @@ void Servo2_SetPosition(float DegreesFromZero)
         return;
     }
     temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN2/2))+(PWM_SPAN2/2))+PWM_OFFSET2;
+    TIMER2_IntEna = 0; /* mask TIMER2 interrupt for this update */
     Position_Servo_2 = temp;
+    TIMER2_IntEna = 1;
 }
 /*
  * Set servo 3 position
@@ -172,5 +182,7 @@ void Servo3_SetPosition(float DegreesFromZero)
     }
     
     temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN3/2))+(PWM_SPAN3/2))+PWM_OFFSET3;
+    TIMER2_IntEna = 0; /* mask TIMER2 interrupt for this update */
     Position_Servo_3 = temp;
+    TIMER2_IntEna = 1;
 }
