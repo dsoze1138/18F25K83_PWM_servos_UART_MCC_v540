@@ -8,12 +8,12 @@
  * 
  *  This code implements pulses to control hobby 
  *  class servo motors that accept a control pulse 
- *  between 0.5 to 2.5 milliseconds with a mid
+ *  between 0.8 to 2.2 milliseconds with a mid
  *  point selected with 1.5 millisecond pulse.
  * 
  *  The Servo1_SetPosition() function accept 
  *  a floating point argument between 
- *  -90.0 and +90.0 degrees.
+ *  -45.0 and +45.0 degrees.
  * 
  * 
  *  For the PIC18F architecture it seems best that
@@ -44,15 +44,17 @@
 #include "servos.h"
 
 #define SERVO_REFRESH_HZ (50ul)
-#define TIMER2_CLOCK_HZ (102400ul)
-#define TIMER2_COUNTS_PER_PERIOD (256ul)
+#define TIMER2_CLOCK_HZ (78125ul)
+#define TIMER2_COUNTS_PER_PERIOD (255ul)
 #define TIMER2_INTERUPTS_IN_20_MS (TIMER2_CLOCK_HZ/(TIMER2_COUNTS_PER_PERIOD*SERVO_REFRESH_HZ))
-#define PWM_OFFSET1 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
-#define PWM_SPAN1   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
-#define PWM_OFFSET2 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
-#define PWM_SPAN2   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
-#define PWM_OFFSET3 ((TIMER2_CLOCK_HZ*4.0*0.5)/1000.0) /* 0.5 milliseconds offset */
-#define PWM_SPAN3   ((TIMER2_CLOCK_HZ*4.0*2.0)/1000.0) /* 2.0 milliseconds span  */
+#define PWM_OFFSET1 ((TIMER2_CLOCK_HZ*4.0*0.8)/1000.0)  /* 0.8 milliseconds offset */
+#define PWM_SPAN1   ((TIMER2_CLOCK_HZ*4.0*1.00)/1000.0) /* 1.0 milliseconds span  */
+
+#define PWM_OFFSET2 ((TIMER2_CLOCK_HZ*4.0*0.8)/1000.0)  /* 0.8 milliseconds offset */
+#define PWM_SPAN2   ((TIMER2_CLOCK_HZ*4.0*1.00)/1000.0) /* 1.0 milliseconds span  */
+
+#define PWM_OFFSET3 ((TIMER2_CLOCK_HZ*4.0*0.8)/1000.0)  /* 0.8 milliseconds offset */
+#define PWM_SPAN3   ((TIMER2_CLOCK_HZ*4.0*1.00)/1000.0) /* 1.0 milliseconds span  */
 
 /* Private data */
 static volatile uint16_t PwmServo_1;
@@ -129,12 +131,12 @@ void Servo1_SetPosition(float DegreesFromZero)
 {
     uint16_t temp;
 
-    if((DegreesFromZero < -90.0) || (DegreesFromZero > 90.0))
+    if((DegreesFromZero < -45.0) || (DegreesFromZero > 45.0))
     {
         return;
     }
     
-    temp = (uint16_t)( ((DegreesFromZero / 90.0)*(PWM_SPAN1/2))+(PWM_SPAN1/2))+PWM_OFFSET1;
+    temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN1/2))+(PWM_SPAN1/2))+PWM_OFFSET1;
     Position_Servo_1 = temp;
 }
 /*
@@ -147,12 +149,11 @@ void Servo2_SetPosition(float DegreesFromZero)
 {
     uint16_t temp;
 
-    if((DegreesFromZero < -90.0) || (DegreesFromZero > 90.0))
+    if((DegreesFromZero < -45.0) || (DegreesFromZero > 45.0))
     {
         return;
     }
-    
-    temp = (uint16_t)( ((DegreesFromZero / 90.0)*(PWM_SPAN2/2))+(PWM_SPAN2/2))+PWM_OFFSET2;
+    temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN2/2))+(PWM_SPAN2/2))+PWM_OFFSET2;
     Position_Servo_2 = temp;
 }
 /*
@@ -165,11 +166,11 @@ void Servo3_SetPosition(float DegreesFromZero)
 {
     uint16_t temp;
 
-    if((DegreesFromZero < -90.0) || (DegreesFromZero > 90.0))
+    if((DegreesFromZero < -45.0) || (DegreesFromZero > 45.0))
     {
         return;
     }
     
-    temp = (uint16_t)( ((DegreesFromZero / 22.5)*(PWM_SPAN3/2))+(PWM_SPAN3/2))+PWM_OFFSET3;
+    temp = (uint16_t)( ((DegreesFromZero / 45.0)*(PWM_SPAN3/2))+(PWM_SPAN3/2))+PWM_OFFSET3;
     Position_Servo_3 = temp;
 }
