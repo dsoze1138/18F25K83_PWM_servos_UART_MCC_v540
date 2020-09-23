@@ -49,6 +49,9 @@
  */
 void main(void)
 {
+    float S1,S2,S3;
+    float S1d,S2d,S3d;
+
     // Initialize the device
     SYSTEM_Initialize();
     Servo_Init();
@@ -71,12 +74,43 @@ void main(void)
 
     __delay_ms(2500); /* wait for IDE to stop messing with the ICD tool */
     printf("PIC18F25K83 Servo demo v1.0 built " __DATE__ " at " __TIME__ "\r\n");
-    Servo1_SetPosition(-45.0);
+    Servo1_SetPosition(0.0);
     Servo2_SetPosition(0.0);
-    Servo3_SetPosition(45.0);
+    Servo3_SetPosition(0.0);
+    S1 = +0.0;
+    S2 = +0.0;
+    S3 = -0.0;
+    S1d = 0.75*1.0;
+    S2d = 0.75*2.0;
+    S3d = -0.75*3.0;
     while (1)
     {
         // Add your application code
+        __delay_ms(10);
+        
+        S1 = S1 + S1d;
+        if ((S1>45.0) || (S1<-45.0))
+        {   
+            S1d = -S1d;
+            S1 = S1 + S1d;
+        }
+
+        S2 = S2 + S2d;
+        if ((S2>45.0) || (S2<-45.0))
+        {   
+            S2d = -S2d;
+            S2 = S2 + S2d;
+        }
+        
+        S3 = S3 + S3d;
+        if ((S3>45.0) || (S3<-45.0))
+        {   
+            S3d = -S3d;
+            S3 = S3 + S3d;
+        }
+        Servo1_SetPosition(S1);
+        Servo2_SetPosition(S2);
+        Servo3_SetPosition(S3);
     }
 }
 /**
