@@ -55,8 +55,8 @@
 #include "interrupt_manager.h"
 #include "tmr1.h"
 #include "pwm6.h"
-#include "pwm7.h"
 #include "tmr2.h"
+#include "pwm7.h"
 #include "pwm5.h"
 #include "uart1.h"
 

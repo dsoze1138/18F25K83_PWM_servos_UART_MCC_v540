@@ -56,8 +56,8 @@ void SYSTEM_Initialize(void)
     PWM6_Initialize();
     TMR2_Initialize();
     PWM5_Initialize();
-    PWM7_Initialize();
     TMR1_Initialize();
+    PWM7_Initialize();
     UART1_Initialize();
 }
 
